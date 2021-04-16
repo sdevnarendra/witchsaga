@@ -46,6 +46,8 @@ public class WitchKillDataService {
 
         result.setMessage(message);
         result.setKillDataList(killDataList);
+        result.setTotalSum(total);
+        result.setNumberOfData(killDataList.size());
         if(total<1){
             result.setAverageResult(new BigDecimal(-1));
         } else {
@@ -64,20 +66,20 @@ public class WitchKillDataService {
 
     private void calculateWitchKillPattern(KillSubjectResultDTO dto) {
         Integer total = 0;
-        Integer v1 = 0;
-        Integer v2 = 1;
+        Integer currValue = 0;
+        Integer nextValue = 1;
         Integer killCycleYear = dto.getKillCycleYear();
         StringBuffer killPattern = new StringBuffer();
         for (Integer i = 1; i <= killCycleYear; ++i) {
-            Integer sum = v1 + v2;
-            v1 = v2;
-            v2 = sum;
+            Integer sum = currValue + nextValue;
+            currValue = nextValue;
+            nextValue = sum;
             if(i==1){
-                killPattern.append(v1);
+                killPattern.append(currValue);
             } else {
-                killPattern.append(" + "+v1);
+                killPattern.append(" + "+currValue);
             }
-            total +=v1;
+            total +=currValue;
         }
         dto.setKillCyclePattern(killPattern.toString());
         dto.setVillagersKilledInThatYear(total);
