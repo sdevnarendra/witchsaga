@@ -53,4 +53,38 @@ public class WitchSagaControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.averageResult", equalTo(4.5)));
     }
+
+    @Test
+    void onNegativeCalculationShouldReturnNegative() throws Exception {
+        List<KillSubjectDTO> request = new ArrayList<>();
+        KillSubjectDTO person = new KillSubjectDTO();
+        person.setAgeOfDeath(10);
+        person.setYearOfDeath(1);
+        request.add(person);
+
+        String api = APIConstant.WITCH_SAGA_CONTROLLER + APIConstant.SOLVE_WITCH_PROBLEM;
+
+        mockMvc.perform(post(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(request)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.averageResult", equalTo(-1)));
+    }
+
+    @Test
+    void onNegativeInputShouldReturnNegative() throws Exception {
+        List<KillSubjectDTO> request = new ArrayList<>();
+        KillSubjectDTO person = new KillSubjectDTO();
+        person.setAgeOfDeath(-1);
+        person.setYearOfDeath(-1);
+        request.add(person);
+
+        String api = APIConstant.WITCH_SAGA_CONTROLLER + APIConstant.SOLVE_WITCH_PROBLEM;
+
+        mockMvc.perform(post(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(request)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.averageResult", equalTo(-1)));
+    }
 }
