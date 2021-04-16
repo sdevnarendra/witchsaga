@@ -2,7 +2,7 @@ package com.geekseat.test.witchsaga.dto;
 
 public class KillSubjectResultDTO extends KillSubjectDTO {
     private Integer killCycleYear;
-    private String killCyclePattern = "0";
+    private String killCyclePattern;
     private Integer villagersKilledInThatYear;
 
     public Integer getKillCycleYear() {
