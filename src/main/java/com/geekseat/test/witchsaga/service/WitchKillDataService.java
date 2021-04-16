@@ -48,7 +48,7 @@ public class WitchKillDataService {
         result.setKillDataList(killDataList);
         result.setTotalSum(total);
         result.setNumberOfData(killDataList.size());
-        if(total<1){
+        if(total<0){
             result.setAverageResult(new BigDecimal(-1));
         } else {
             result.setAverageResult(getTotalAverage(total, killDataList.size()));
