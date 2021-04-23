@@ -12,12 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {WitchsagaApplication.class})
@@ -69,6 +71,37 @@ public class WitchSagaControllerTest {
                 .content(mapper.writeValueAsBytes(request)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.averageResult", equalTo(-1)));
+    }
+
+    @Test
+    void onUserInputBeyondIntegerMaxShouldReturnBadRequest() throws Exception {
+        // Used jsonString to prevent error Max Integer from IDE
+        String jsonString = "[{\"ageOfDeath\": 1,\"yearOfDeath\": 2147483648}]";
+
+        String api = APIConstant.WITCH_SAGA_CONTROLLER + APIConstant.SOLVE_WITCH_PROBLEM;
+
+        mockMvc.perform(post(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void onCalculationOperationBeyondIntegerMaxShouldReturnNegative() throws Exception {
+        List<KillSubjectDTO> request = new ArrayList<>();
+        KillSubjectDTO person = new KillSubjectDTO();
+        person.setAgeOfDeath(1);
+        person.setYearOfDeath(46);
+        request.add(person);
+
+        String api = APIConstant.WITCH_SAGA_CONTROLLER + APIConstant.SOLVE_WITCH_PROBLEM;
+
+        mockMvc.perform(post(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(request)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.averageResult", equalTo(-1)))
+                .andExpect(jsonPath("$.message", equalTo("Success")));
     }
 
     @Test
